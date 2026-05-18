@@ -3,8 +3,8 @@
 ## FSMState (a_FSM_Main — главная машина выравнивания)
 ```mermaid
 graph LR
-    blocks_Split --> blocks_Process
-    blocks_Process --> result_Emit
+    blocks_Split -   -> blocks_Process
+    blocks_Process - -> result_Emit   
 ```
 
 Состояния:
@@ -15,8 +15,8 @@ graph LR
 ## GroupingState (legacy — blocks_Find по отступу)
 ```mermaid
 graph LR
-    WaitingForStart --> Accumulating
-    Accumulating --> WaitingForStart
+    WaitingForStart - -> Accumulating   
+    Accumulating -    -> WaitingForStart
 ```
 
 Заменён на `blocks_Split` (группировка по вектору признаков P(f), а не по отступу).
@@ -24,29 +24,29 @@ graph LR
 ## PipelineState (pipeline_Build)
 ```mermaid
 graph LR
-    Idle --> LoadConfig
-    LoadConfig --> DetectLanguage
-    DetectLanguage --> FindBlocks
-    FindBlocks --> ParseLines
-    ParseLines --> Align
-    Align --> ReplaceText
-    ReplaceText --> Done
-    ReplaceText --> Error
-    LoadConfig --> Error
-    DetectLanguage --> Error
-    FindBlocks --> Error
-    ParseLines --> Error
-    Align --> Error
+    Idle -           -> LoadConfig    
+    LoadConfig -     -> DetectLanguage
+    DetectLanguage - -> FindBlocks    
+    FindBlocks -     -> ParseLines    
+    ParseLines -     -> Align         
+    Align -          -> ReplaceText   
+    ReplaceText -    -> Done          
+    ReplaceText -    -> Error         
+    LoadConfig -     -> Error         
+    DetectLanguage - -> Error         
+    FindBlocks -     -> Error         
+    ParseLines -     -> Error         
+    Align -          -> Error         
 ```
 
 ## BlockSearchState (extension.ts — blockSearchFSM)
 ```mermaid
 graph LR
-    WaitingForData --> ValidatingContext
-    ValidatingContext --> AnalyzingSelection
-    AnalyzingSelection --> ExtractingLines
-    ExtractingLines --> GroupingBlocks
-    GroupingBlocks --> Done
-    AnalyzingSelection --> Error
-    ValidatingContext --> Error
+    WaitingForData -     -> ValidatingContext 
+    ValidatingContext -  -> AnalyzingSelection
+    AnalyzingSelection - -> ExtractingLines   
+    ExtractingLines -    -> GroupingBlocks    
+    GroupingBlocks -     -> Done              
+    AnalyzingSelection - -> Error             
+    ValidatingContext -  -> Error             
 ```

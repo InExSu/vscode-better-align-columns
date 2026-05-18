@@ -558,3 +558,15 @@ const sourceCode = `function pattern_MatchAt(
 а такие строки я не могу визуально контролировать
 const expectedOutput = "function pattern_MatchAt(\n    line    : string,  \n    pos     : number,  \n    patterns: Pattern[]\n): string | null {"
 переделай их в ``.
+
+2026-05-15 23-39-30
+v6.18.5
+Код
+
+    const prevEndsWithBrace = state.key_Current?.includes('{')
+    const braceDepthDecreased = braceDepth < (state.prevBraceDepth || 0)
+
+Если ничего не выделено, курсор на строке кода, вызываю расширение alt+a выравнивание происходит.
+Если выделяю в редакторе весь код, вызываю расширение alt+a выравнивание НЕ происходит.
+Исследуй может быть это связано, что в выделенном коде 1000 строк.
+Напиши тест с явным сравнением по образцу выровненного кода.

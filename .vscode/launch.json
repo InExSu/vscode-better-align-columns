@@ -3,13 +3,13 @@
 	// Use IntelliSense to learn about possible attributes.
 	// Hover to view descriptions of existing attributes.
 	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-	"version": "0.2.0",
-	"configurations": [
+	"version"       : "0.2.0",
+	"configurations": [       
 		{
-			"name": "Run Extension",
-			"type": "extensionHost",
-			"request": "launch",
-			"args": [
+			"name"   : "Run Extension",
+			"type"   : "extensionHost",
+			"request": "launch",       
+			"args"   : [               
 				"--extensionDevelopmentPath=${workspaceFolder}"
 			],
 			"outFiles": [
@@ -18,12 +18,10 @@
 			"preLaunchTask": "${defaultBuildTask}"
 		},
 		{
-			"name": "Extension Tests",
-			"type": "extensionHost",
-			"request": "launch",
-			"args": [
-				,
-				,
+			"name"   : "Extension Tests",
+			"type"   : "extensionHost",  
+			"request": "launch",         
+			"args"   : [                 
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
 			],
@@ -34,53 +32,53 @@
 			"preLaunchTask": "tasks: watch-tests"
 		},
 		{
-			"name": "Debug Tests (ts-mocha)",
-			"type": "node",
-			"request": "launch",
-			"runtimeExecutable": "npx",
-			"runtimeArgs": [
-				"ts-mocha",
-				"-p",
-				"tsconfig.json",
-				"test/align.test.ts",
-				"--timeout",
-				"30000",
+			"name"             : "Debug Tests (ts-mocha)",
+			"type"             : "node",                  
+			"request"          : "launch",                
+			"runtimeExecutable": "npx",                   
+			"runtimeArgs"      : [                        
+				"ts-mocha"          , 
+				"-p"                , 
+				"tsconfig.json"     , 
+				"test/align.test.ts", 
+				"--timeout"         , 
+				"30000"             , 
 				"--inspect-brk"
 			],
-			"cwd": "${workspaceFolder}",
-			"console": "integratedTerminal",
-			"skipFiles": [
+			"cwd"      : "${workspaceFolder}",
+			"console"  : "integratedTerminal",
+			"skipFiles": [                    
 				"<node_internals>/**"
 			],
-			"env": {
+			"env"            : {              
 				"TS_NODE_PROJECT": "tsconfig.json"
 			}
 		},
 		{
-			"name": "Debug Test File",
-			"type": "node",
-			"request": "launch",
+			"name"   : "Debug Test File",                                      
+			"type"   : "node",                                                 
+			"request": "launch",                                               
 			"program": "${workspaceFolder}/node_modules/ts-mocha/bin/ts-mocha",
-			"args": [
-				"-p",
-				"tsconfig.json",
-				"test/align.test.ts",
-				"--timeout",
+			"args"   : [                                                       
+				"-p"                , 
+				"tsconfig.json"     , 
+				"test/align.test.ts", 
+				"--timeout"         , 
 				"30000"
 			],
-			"cwd": "${workspaceFolder}",
-			"console": "integratedTerminal",
-			"resolveSourceMapLocations": [
+			"cwd"                      : "${workspaceFolder}",
+			"console"                  : "integratedTerminal",
+			"resolveSourceMapLocations": [                    
 				"${workspaceFolder}/src/**/*.ts"
 			],
 			"sourceMaps": true
 		},
 		{
-			"name": "Run Web Extension in VS Code",
-			"type": "extensionHost",
-			"debugWebWorkerHost": true,
-			"request": "launch",
-			"args": [
+			"name"              : "Run Web Extension in VS Code",
+			"type"              : "extensionHost",               
+			"debugWebWorkerHost": true,                          
+			"request"           : "launch",                      
+			"args"              : [                              
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--extensionDevelopmentKind=web"
 			],
@@ -90,67 +88,67 @@
 			"preLaunchTask": "${defaultBuildTask}"
 		},
 		{
-			"name": "Debug Active File (Node.js)",
-			"type": "node",
-			"request": "launch",
-			"program": "${file}",
-			"cwd": "${fileDirname}",
-			"console": "integratedTerminal",
-			"skipFiles": [
+			"name"     : "Debug Active File (Node.js)",
+			"type"     : "node",                       
+			"request"  : "launch",                     
+			"program"  : "${file}",                    
+			"cwd"      : "${fileDirname}",             
+			"console"  : "integratedTerminal",         
+			"skipFiles": [                             
 				"<node_internals>/**"
 			],
-			"env": {
+			"env"     : {            
 				"NODE_ENV": "development"
 			}
 		},
 		{
-			"name": "Debug Active File with Arguments",
-			"type": "node",
-			"request": "launch",
-			"program": "${file}",
-			"args": [],
-			"cwd": "${fileDirname}",
-			"console": "integratedTerminal",
-			"skipFiles": [
+			"name"     : "Debug Active File with Arguments",
+			"type"     : "node",                            
+			"request"  : "launch",                          
+			"program"  : "${file}",                         
+			"args"     : [],                                
+			"cwd"      : "${fileDirname}",                  
+			"console"  : "integratedTerminal",              
+			"skipFiles": [                                  
 				"<node_internals>/**"
 			]
 		},
 		{
-			"name": "Debug Active TypeScript File",
-			"type": "node",
-			"request": "launch",
-			"runtimeExecutable": "node",
-			"runtimeArgs": [
-				"--loader",
-				"ts-node/esm",
+			"name"             : "Debug Active TypeScript File",
+			"type"             : "node",                        
+			"request"          : "launch",                      
+			"runtimeExecutable": "node",                        
+			"runtimeArgs"      : [                              
+				"--loader"   , 
+				"ts-node/esm", 
 				"--enable-source-maps"
 			],
-			"program": "${file}",
-			"cwd": "${fileDirname}",
-			"console": "integratedTerminal",
-			"resolveSourceMapLocations": [
+			"program"                  : "${file}",           
+			"cwd"                      : "${fileDirname}",    
+			"console"                  : "integratedTerminal",
+			"resolveSourceMapLocations": [                    
 				"${workspaceFolder}/**",
 				"!**/node_modules/**"
 			],
-			"env": {
+			"env"            : {                                  
 				"TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json",
-				"NODE_OPTIONS": "--loader ts-node/esm"
+				"NODE_OPTIONS"   : "--loader ts-node/esm"             
 			}
 		},
 		{
-			"name": "Debug Active Python File",
-			"type": "debugpy",
-			"request": "launch",
-			"program": "${file}",
-			"cwd": "${fileDirname}",
-			"console": "integratedTerminal",
-			"justMyCode": true
+			"name"      : "Debug Active Python File",
+			"type"      : "debugpy",                 
+			"request"   : "launch",                  
+			"program"   : "${file}",                 
+			"cwd"       : "${fileDirname}",          
+			"console"   : "integratedTerminal",      
+			"justMyCode": true                       
 		}
 	],
 	"compounds": [
 		{
-			"name": "Full Test Suite",
-			"configurations": [
+			"name"          : "Full Test Suite",
+			"configurations": [                 
 				"Extension Tests",
 				"Debug Tests (ts-mocha)"
 			]

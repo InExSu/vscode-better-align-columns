@@ -203,63 +203,6 @@ function depth_Advance(
 
 // ── 6. MASKING ────────────────────────────────────────────────
 
-// function mask_StringsAndComments(
-//     line: string
-// ): string {
-
-//     let result = ''
-
-//     let i = 0
-
-//     let inString: string | null = null
-
-//     while(i < line.length) {
-
-//         const ch = line[i]
-
-//         if(inString !== null) {
-
-//             if(ch === '\\') {
-//                 result += '\0\0'
-//                 i      += 2     
-//                 continue
-//             }
-
-//             result += '\0'
-
-//             if(ch === inString) { inString = null }
-
-//             i++
-//             continue
-//         }
-
-//         if(
-//             ch === '"' || 
-//             ch === '\'' ||
-//             ch === '`'    
-//         ) {
-//             inString = ch
-//             result += '\0'
-//             i++
-//             continue
-//         }
-
-//         if(
-//             line.startsWith('//', i)
-//         ) {
-//             result += '\0'.repeat(
-//                 line.length - i
-//             )
-//             break
-//         }
-
-//         result += ch
-//         i++
-//     }
-
-//     return result
-// }
-
 function mask_StringsAndComments(
     line: string
 ): string {

@@ -7,6 +7,16 @@ export const DEFAULT_LANGUAGE_RULES: LanguageRules = {
   alignChars: []
 }
 
+const state = {
+  key_Current: '',
+  prevBraceDepth: 0
+}
+
+const braceDepth = 0  // или другое значение
+
+const prevEndsWithBrace = state.key_Current.includes('{')
+const braceDepthDecreased = braceDepth < (state.prevBraceDepth ?? 0)
+
 {
   let x = 1
   let longName = 2
