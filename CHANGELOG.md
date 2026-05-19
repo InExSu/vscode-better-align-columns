@@ -1,3 +1,9 @@
+# v6.21.0 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.21.0)
+
+- fix: Align only by common left prefix of anchors (scope resolution `::` and object access `->` preserved)
+- fix: Do not split `::` into `: :`
+- fix: Do not align `->` when preceded by variable character (e.g., `$ns->method`)
+
 # v6.20.0 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.20.0)
 
 - fix: Do not split `::` into `: :` (scope resolution operator preserved)

@@ -28,9 +28,9 @@ describe('Align code_4_Test.ts', () => {
 describe('Double colon :: should not be split', () => {
     it('should keep :: together and not add spaces between $ns and ->', () => {
         const input = `    match ($ns->s_FTP_From) {
-        FTP_From:: FTP  => FTP_Files_Read($ns),
-        FTP_From:: Local=> Local_Files_Read($ns),
-        FTP_From:: B24  => $ns->FTP_Files_Read = [],
+        FTP_From::FTP  => FTP_Files_Read($ns),
+        FTP_From::Local=> Local_Files_Read($ns),
+        FTP_From::B24  => $ns->FTP_Files_Read = [],
     };`
 
         const aligned = text_AlignByBlocks(input, DEFAULT_CONFIG.defaultAlignChars)
@@ -39,5 +39,22 @@ describe('Double colon :: should not be split', () => {
         assert.ok(!aligned.includes('$ns  ->'), 'Should not add spaces between $ns and ->')
         assert.ok(aligned.includes('$ns->'), 'Should keep $ns-> together')
         assert.ok(aligned.includes('FTP_From::'), 'Should keep :: together')
+    })
+
+    it('should not align $ns with -> when anchors differ (comma vs equals)', () => {
+        const input = `    match ($ns->s_FTP_From) {
+        FTP_From::FTP  => FTP_Files_Read($ns)  ,
+        FTP_From::Local=> Local_Files_Read($ns),
+        FTP_From::B24  => $ns->FTP_Files_Read = [],
+    };`
+
+        const aligned = text_AlignByBlocks(input, DEFAULT_CONFIG.defaultAlignChars)
+
+        assert.ok(!aligned.includes('$ns                  ->'), 'Should not split $ns from ->')
+        assert.ok(aligned.includes('$ns->FTP_Files_Read'), 'Should keep $ns->FTP_Files_Read together')
+
+        const lines = aligned.split('\n')
+        const b24Line = lines.find(l => l.includes('B24'))
+        assert.ok(b24Line?.includes('$ns->'), 'B24 line should have $ns-> without spaces')
     })
 })

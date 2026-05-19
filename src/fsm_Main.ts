@@ -341,7 +341,8 @@ export function patterns_Find(
                 /[a-zA-Z0-9_$]/.test(masked[i - 1])
             ) {
                 depth_Advance(depth, masked[i])
-                i++
+                depth_Advance(depth, masked[i + 1])
+                i += 2
                 continue
             }
 
@@ -685,11 +686,24 @@ function block_Process(
     const hasMultiCharPat = patsWithPats.some(p => p[0].pattern.length > 1)
     const singlePat = allSingle && hasMultiCharPat
 
-    if(count === 0) { return lines }
+    function commonAnchorCount(allPats: PatternMatch[][]): number {
+        if(allPats.length === 0) { return 0 }
+        const first = allPats[0]
+        let count = 0
+        for(let i = 0; i < first.length; i++) {
+            const anchor = first[i].pattern
+            if(allPats.every(p => p[i]?.pattern === anchor)) {
+                count++
+            } else {
+                break
+            }
+        }
+        return count
+    }
 
-    const patsTruncated = patsWithPats.map(p => p.slice(0, count))
+    const anchorCount = commonAnchorCount(patsWithPats)
 
-    if(count === 0) { return lines }
+    if(anchorCount === 0) { return lines }
 
     const linesWithPatsBodies = linesWithPats.map(i => decomposed[i])
 
@@ -700,7 +714,7 @@ function block_Process(
         widths_Measure(
             linesWithPatsBodies, 
             patsWithPats       , 
-            count              , 
+            anchorCount        , 
             seps
         )
 
@@ -714,7 +728,7 @@ function block_Process(
             line_Render(
                 line.body , 
                 pats      , 
-                count     , 
+                anchorCount, 
                 widths_Key, 
                 widths_Val, 
                 seps      , 
