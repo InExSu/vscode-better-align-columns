@@ -1,3 +1,12 @@
+# v6.19.0 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.19.0)
+
+- feat: Add `??` (nullish coalescing) to default align characters
+- test: Add unit test for `??` alignment with explicit expected output
+
+# v6.18.5 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.18.5)
+
+- fix: Various alignment improvements (let statements in function bodies, return type colon prevention, object property merging)
+
 # v6.18.1 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.18.1)
 
 - fix: Align operators with one space after variable (e.g., `if(x === 1)` → `if(x === 1)` with proper spacing)

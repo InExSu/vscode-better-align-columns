@@ -63,6 +63,21 @@ let b = 2;
         assert.strictEqual(out, expected, "Should not align colon inside a comment");
     });
 
+    it('should align ?? (nullish coalescing) operator', () => {
+        const input =
+`let a = b ?? 'default'
+let longName = short ?? fallback
+let xy = z ?? w`
+
+        const expected =
+`let a       = b    ?? 'default'
+let longName= short?? fallback 
+let xy      = z    ?? w        `
+
+        const out = text_AlignByBlocks(input, DEFAULT_CONFIG.defaultAlignChars)
+        assert.strictEqual(out, expected)
+    })
+
     it('should not align by { anymore', () => {
         const input = `
 if (true) {

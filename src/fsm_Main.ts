@@ -81,6 +81,7 @@ export const DEFAULT_CONFIG = {
         ':',
         '=',
         ',',
+        '??',
     ],
 
     defaultSeps: [
