@@ -24,3 +24,20 @@ describe('Align code_4_Test.ts', () => {
         assert.ok(filesDiffer, 'code_Aligned.ts must differ from code_4_Test.ts - alignment did not work')
     })
 })
+
+describe('Double colon :: should not be split', () => {
+    it('should keep :: together and not add spaces between $ns and ->', () => {
+        const input = `    match ($ns->s_FTP_From) {
+        FTP_From:: FTP  => FTP_Files_Read($ns),
+        FTP_From:: Local=> Local_Files_Read($ns),
+        FTP_From:: B24  => $ns->FTP_Files_Read = [],
+    };`
+
+        const aligned = text_AlignByBlocks(input, DEFAULT_CONFIG.defaultAlignChars)
+
+        assert.ok(!aligned.includes(': :'), 'Should not split :: into : :')
+        assert.ok(!aligned.includes('$ns  ->'), 'Should not add spaces between $ns and ->')
+        assert.ok(aligned.includes('$ns->'), 'Should keep $ns-> together')
+        assert.ok(aligned.includes('FTP_From::'), 'Should keep :: together')
+    })
+})

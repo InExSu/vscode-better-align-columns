@@ -1,3 +1,8 @@
+# v6.20.0 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.20.0)
+
+- fix: Do not split `::` into `: :` (scope resolution operator preserved)
+- fix: Do not align `->` when preceded by variable character (e.g., `$ns->method` kept together)
+
 # v6.19.0 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.19.0)
 
 - feat: Add `??` (nullish coalescing) to default align characters

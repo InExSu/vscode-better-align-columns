@@ -324,6 +324,27 @@ export function patterns_Find(
 
         if(matched !== null) {
 
+            if(
+                matched === ':' &&
+                i + 1 < masked.length &&
+                masked[i + 1] === ':'
+            ) {
+                depth_Advance(depth, masked[i])
+                depth_Advance(depth, masked[i + 1])
+                i += 2
+                continue
+            }
+
+            if(
+                matched === '->' &&
+                i > 0 &&
+                /[a-zA-Z0-9_$]/.test(masked[i - 1])
+            ) {
+                depth_Advance(depth, masked[i])
+                i++
+                continue
+            }
+
             const isInsideParens = depth.parenDepth > 0
 
             if(
@@ -424,10 +445,10 @@ function segment_Parse(
     if(found === null) {
 
         return {
-            key: '',
-            val: raw,
-            sep: '',
-            after: '',
+            key  : '' , 
+            val  : raw, 
+            sep  : '' , 
+            after: '' , 
         }
     }
 
