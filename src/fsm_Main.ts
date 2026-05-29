@@ -819,6 +819,8 @@ function blockState_OnLine(
 
 
 
+    const isInsideSomething = state.prevParenDepth > 0 || state.prevBracketDepth > 0;
+
     const shouldSplitFromAssignment = prevHasEqualsAssignment && currentHasColonOnly && isTopLevel
 
     const shouldMerge =
@@ -828,7 +830,7 @@ function blockState_OnLine(
         !braceDepthDecreased &&
         !bracketDepthDecreased &&
         !prevEndsWithBrace &&
-        (state.prevParenDepth > 0 || parenDepth >= 0)
+        (isInsideSomething || parenDepth >= 0)
 
     if(shouldMerge) {
 
