@@ -590,6 +590,7 @@ function segment_Render(
     const rendered =
 
         seg.key.padEnd(keyPad) +
+        ' ' +
         seg.anchor +
         ' ' +
         seg.val.padEnd(width_Val) +

@@ -7,7 +7,11 @@ const sourceCode = `function fn_AutoSearchIndent() {
     return { startLine: 0, endLine: 0 }
 }`
 
-const expectedOutput = "function fn_AutoSearchIndent() {\n    let z = 1         \n    let pq= { start: 0, end: 0 }\n    return { startLine: 0, endLine: 0 }\n}"
+const expectedOutput = `function fn_AutoSearchIndent() {
+    let z  = 1
+    let pq = { start: 0, end: 0 }
+    return { startLine: 0, endLine: 0 }
+}`
 
 describe('Align let assignments', () => {
     it('should align = in consecutive let statements', () => {

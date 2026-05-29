@@ -644,3 +644,21 @@ src/extension.ts
 Создай тест для этого случая.
 Не сломай другие тесты.
 Собери новую версию vsix, установи vsix в vs code, запусти gh.sh
+
+2026-05-29 19-50-15
+src/extension.ts Проблема
+Такой код:
+const env = l         
+const op = e
+const ric = Y  
+выровнялся в: 
+const env= l
+const op = e
+const ric= Y
+а нужно в: 
+const env = l
+const op  = e
+const ric = Y
+Создай тест для этого случая.
+Исправь существующие тесты.
+Собери новую версию vsix, установи vsix в vs code, запусти gh.sh
