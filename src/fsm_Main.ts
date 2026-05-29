@@ -248,30 +248,25 @@ function mask_StringsAndComments(
                 break
 
             case State.InString:
-                switch(ch) {
-                    case '\\':
-                        state = State.InEscape
-                        result += '\0\0'
-                        i      += 2     
-                        break
-                    default:
-                        switch(ch === quoteChar) {
-                            case true:
-                                state    = State.Normal
-                                quoteChar= null        
-                                result += '\0'
-                                i++
-                                break
-                            case false:
-                                result += '\0'
-                                i++
-                                break
-                        }
-                        break
+                if (ch === '\\') {
+                    state = State.InEscape
+                    result += '\0' // Mask the backslash
+                    i++
+                } else if (ch === quoteChar) {
+                    state = State.Normal
+                    quoteChar = null
+                    result += '\0'
+                    i++
+                } else {
+                    result += '\0'
+                    i++
                 }
                 break
 
             case State.InEscape:
+                // The character after '\' is escaped. Mask it and return to InString.
+                result += '\0'
+                i++
                 state = State.InString
                 break
         }
@@ -404,9 +399,11 @@ function sep_Find(
 
     let best: SepMatch | null = null
 
+    const masked = mask_StringsAndComments(s)
+
     for(const sep of seps) {
 
-        const idx = s.indexOf(sep, from)
+        const idx = masked.indexOf(sep, from)
 
         if(
             idx !== -1 &&
