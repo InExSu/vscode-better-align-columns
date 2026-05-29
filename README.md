@@ -34,6 +34,8 @@ Alternatively, use the default keybinding.
 
 ## Example
 
+### Simple Assignment Alignment
+
 **Before:**
 ```javascript
 const env = l
@@ -50,6 +52,30 @@ const op      = e
 const ric     = Y 
 let a         = 1;
 let longerVar = 2;
+```
+
+### Multi-criteria Alignment
+
+This example demonstrates how the extension can align multiple operators (`:`, and `,`) as well as comments within the same block of code.
+
+**Before:**
+```javascript
+const config = {
+    host: "localhost", // Database host
+    port: 5432, // Port number
+    user: "admin", // Database user
+    password: "password123", // User password
+};
+```
+
+**After:**
+```javascript
+const config = {
+    host     : "localhost"   , // Database host
+    port     : 5432          , // Port number  
+    user     : "admin"       , // Database user
+    password : "password123" , // User password
+};
 ```
 
 ## Configuration
