@@ -874,7 +874,6 @@ function blocks_Split(
 ): number[][] {
 
     let state: BlockState = {
-
         blocks: [],
         block_Current: [],
         key_Current: null,
@@ -883,63 +882,47 @@ function blocks_Split(
         prevBracketDepth: 0,
     }
 
-    for(let i = 0; i < lines_All.length; i++) {
+    let cumulativeDepth = depth_Create();
 
-        if(lines_All[i].trim() === '') {
+    for (let i = 0; i < lines_All.length; i++) {
+        const line = lines_All[i];
 
-            state =
-                blockState_OnEmpty(state)
-
-            continue
+        if (line.trim() === '') {
+            state = blockState_OnEmpty(state);
+            // Reset depth for the next block
+            cumulativeDepth = depth_Create();
+            // Also reset prev depths in state for blockState_OnLine logic
+            state.prevParenDepth = 0;
+            state.prevBraceDepth = 0;
+            state.prevBracketDepth = 0;
+            continue;
         }
 
-        const decomposed =
-            line_Decompose(lines_All[i])
+        const decomposed = line_Decompose(line);
+        
+        // Pass the cumulative depth state to patterns_Find. 
+        // It will be updated to reflect the depth at the end of the current line.
+        const patternsOnLine = patterns_Find(decomposed.body, patterns, cumulativeDepth);
+        const key = patterns_ToKey(patternsOnLine);
 
-        const key =
-            patterns_ToKey(
-                patterns_Find(
-                    decomposed.body,
-                    patterns
-                )
-            )
-
-
-
-        const lineParenDepth =
-            (decomposed.body.match(/\(/g) || []).length -
-            (decomposed.body.match(/\)/g) || []).length
-
-        const lineBraceDepth =
-            (decomposed.body.match(/\{/g) || []).length -
-            (decomposed.body.match(/\}/g) || []).length
-
-        const lineBracketDepth =
-            (decomposed.body.match(/\[/g) || []).length -
-            (decomposed.body.match(/\]/g) || []).length
-
-        const cumulativeParenDepth =
-            state.prevParenDepth + lineParenDepth
-
-        const cumulativeBraceDepth =
-            (state.prevBraceDepth || 0) + lineBraceDepth
-
-        const cumulativeBracketDepth =
-            (state.prevBracketDepth || 0) + lineBracketDepth
-
-        state =
-            blockState_OnLine(
-                state                , 
-                i                    , 
-                key                  , 
-                cumulativeParenDepth , 
-                cumulativeBraceDepth,
-                cumulativeBracketDepth
-            )
+        // Now cumulativeDepth is the depth at the end of the current line.
+        // The old depths are still in `state.prev...Depth`.
+        state = blockState_OnLine(
+            state,
+            i,
+            key,
+            cumulativeDepth.parenDepth,
+            cumulativeDepth.braceDepth,
+            cumulativeDepth.bracketDepth
+        );
+        
+        // Update the state's `prev` depths for the *next* line's comparison.
+        state.prevParenDepth = cumulativeDepth.parenDepth;
+        state.prevBraceDepth = cumulativeDepth.braceDepth;
+        state.prevBracketDepth = cumulativeDepth.bracketDepth;
     }
 
-    return blockState_FlushCurrent(state)
-        .blocks
+    return blockState_FlushCurrent(state).blocks;
 }
 
 // ── 14. ENTRY POINT ───────────────────────────────────────────
