@@ -234,7 +234,6 @@ function mask_StringsAndComments(
                 switch(ch) {
                     case '"':
                     case '\'':
-                    case '`':
                         state = State.InString
                         quoteChar = ch
                         result += '\0'
