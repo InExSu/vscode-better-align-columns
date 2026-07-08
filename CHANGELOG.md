@@ -1,3 +1,13 @@
+# v6.21.2 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.21.2)
+
+- fix: Prevent `.=` (PHP concat-assign) from being split into `. =`
+
+# v6.21.1 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.21.1)
+
+- fix: Disable alignment inside template literals
+- fix: Correct depth tracking for large files in `blocks_Split`
+- fix: Improve block splitting for bracketed expressions and arrays
+
 # v6.21.0 [#](https://github.com/InExSu/vscode-better-align-columns/releases/tag/v6.21.0)
 
 - fix: Align only by common left prefix of anchors (scope resolution `::` and object access `->` preserved)

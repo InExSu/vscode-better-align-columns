@@ -24,6 +24,7 @@ exports.DEFAULT_CONFIG = {
         '/=',
         '%=',
         '**=',
+        '.=',
         ':',
         '=',
         ',',
@@ -133,7 +134,6 @@ function mask_StringsAndComments(line) {
                 switch (ch) {
                     case '"':
                     case '\'':
-                    case '`':
                         state = State.InString;
                         quoteChar = ch;
                         result += '\0';
@@ -246,8 +246,9 @@ exports.patterns_ToKey = patterns_ToKey;
 // ── 8. SEPARATORS ─────────────────────────────────────────────
 function sep_Find(s, from, seps) {
     let best = null;
+    const masked = mask_StringsAndComments(s);
     for (const sep of seps) {
-        const idx = s.indexOf(sep, from);
+        const idx = masked.indexOf(sep, from);
         if (idx !== -1 &&
             (best === null ||
                 idx < best.idx)) {
@@ -338,6 +339,7 @@ function widths_Measure(lines, patterns_PerLine, count, seps) {
 function segment_Render(seg, width_Key, width_Val, is_Last, singlePat = false) {
     const keyPad = singlePat ? width_Key + 1 : width_Key;
     const rendered = seg.key.padEnd(keyPad) +
+        ' ' +
         seg.anchor +
         ' ' +
         seg.val.padEnd(width_Val) +
@@ -430,6 +432,7 @@ function blockState_FlushCurrent(state) {
         key_Current: null,
         prevParenDepth: state.prevParenDepth,
         prevBraceDepth: state.prevBraceDepth,
+        prevBracketDepth: state.prevBracketDepth,
     };
 }
 function blockState_OnEmpty(state) {
@@ -442,9 +445,10 @@ function commonPrefix(a, b) {
     }
     return a.slice(0, i);
 }
-function blockState_OnLine(state, i, key, parenDepth, braceDepth) {
+function blockState_OnLine(state, i, key, parenDepth, braceDepth, bracketDepth) {
     const prefix = commonPrefix(key, state.key_Current || '');
     const parenDepthDecreased = parenDepth < state.prevParenDepth;
+    const bracketDepthDecreased = bracketDepth < state.prevBracketDepth;
     const prevEndsWithBrace = state.key_Current?.includes('{');
     const braceDepthDecreased = braceDepth < (state.prevBraceDepth || 0);
     const firstAnchorOf = (k) => k.split('\0')[0] || '';
@@ -455,13 +459,15 @@ function blockState_OnLine(state, i, key, parenDepth, braceDepth) {
     const prevHasEqualsAssignment = (state.key_Current || '').includes('=');
     const currentHasColonOnly = key.includes(':') && !key.includes('=');
     const isTopLevel = parenDepth === 0 && (state.prevParenDepth || 0) === 0;
+    const isInsideSomething = state.prevParenDepth > 0 || state.prevBracketDepth > 0;
     const shouldSplitFromAssignment = prevHasEqualsAssignment && currentHasColonOnly && isTopLevel;
     const shouldMerge = firstAnchorsMatch &&
         !shouldSplitFromAssignment &&
         !parenDepthDecreased &&
         !braceDepthDecreased &&
+        !bracketDepthDecreased &&
         !prevEndsWithBrace &&
-        (state.prevParenDepth > 0 || parenDepth >= 0);
+        (isInsideSomething || parenDepth >= 0);
     if (shouldMerge) {
         return {
             ...state,
@@ -471,6 +477,7 @@ function blockState_OnLine(state, i, key, parenDepth, braceDepth) {
             ],
             prevParenDepth: parenDepth,
             prevBraceDepth: braceDepth,
+            prevBracketDepth: bracketDepth,
         };
     }
     const flushed = blockState_FlushCurrent(state);
@@ -480,6 +487,7 @@ function blockState_OnLine(state, i, key, parenDepth, braceDepth) {
         key_Current: key,
         prevParenDepth: parenDepth,
         prevBraceDepth: braceDepth,
+        prevBracketDepth: bracketDepth,
     };
 }
 function blocks_Split(lines_All, patterns) {
@@ -489,26 +497,35 @@ function blocks_Split(lines_All, patterns) {
         key_Current: null,
         prevParenDepth: 0,
         prevBraceDepth: 0,
+        prevBracketDepth: 0,
     };
+    let cumulativeDepth = depth_Create();
     for (let i = 0; i < lines_All.length; i++) {
-        if (lines_All[i].trim() === '') {
-            state =
-                blockState_OnEmpty(state);
+        const line = lines_All[i];
+        if (line.trim() === '') {
+            state = blockState_OnEmpty(state);
+            // Reset depth for the next block
+            cumulativeDepth = depth_Create();
+            // Also reset prev depths in state for blockState_OnLine logic
+            state.prevParenDepth = 0;
+            state.prevBraceDepth = 0;
+            state.prevBracketDepth = 0;
             continue;
         }
-        const decomposed = line_Decompose(lines_All[i]);
-        const key = patterns_ToKey(patterns_Find(decomposed.body, patterns));
-        const lineParenDepth = (decomposed.body.match(/\(/g) || []).length -
-            (decomposed.body.match(/\)/g) || []).length;
-        const lineBraceDepth = (decomposed.body.match(/\{/g) || []).length -
-            (decomposed.body.match(/\}/g) || []).length;
-        const cumulativeParenDepth = state.prevParenDepth + lineParenDepth;
-        const cumulativeBraceDepth = (state.prevBraceDepth || 0) + lineBraceDepth;
-        state =
-            blockState_OnLine(state, i, key, cumulativeParenDepth, cumulativeBraceDepth);
+        const decomposed = line_Decompose(line);
+        // Pass the cumulative depth state to patterns_Find. 
+        // It will be updated to reflect the depth at the end of the current line.
+        const patternsOnLine = patterns_Find(decomposed.body, patterns, cumulativeDepth);
+        const key = patterns_ToKey(patternsOnLine);
+        // Now cumulativeDepth is the depth at the end of the current line.
+        // The old depths are still in `state.prev...Depth`.
+        state = blockState_OnLine(state, i, key, cumulativeDepth.parenDepth, cumulativeDepth.braceDepth, cumulativeDepth.bracketDepth);
+        // Update the state's `prev` depths for the *next* line's comparison.
+        state.prevParenDepth = cumulativeDepth.parenDepth;
+        state.prevBraceDepth = cumulativeDepth.braceDepth;
+        state.prevBracketDepth = cumulativeDepth.bracketDepth;
     }
-    return blockState_FlushCurrent(state)
-        .blocks;
+    return blockState_FlushCurrent(state).blocks;
 }
 // ── 14. ENTRY POINT ───────────────────────────────────────────
 function text_AlignByBlocks(input, patterns, seps = exports.DEFAULT_CONFIG.defaultSeps) {

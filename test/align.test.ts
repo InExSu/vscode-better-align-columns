@@ -55,6 +55,30 @@ describe('Double colon :: should not be split', () => {
 
         const lines = aligned.split('\n')
         const b24Line = lines.find(l => l.includes('B24'))
-        assert.ok(b24Line?.includes('$ns->'), 'B24 line should have $ns-> without spaces')
+            assert.ok(b24Line?.includes('$ns->'), 'B24 line should have $ns-> without spaces')
+    })
+})
+
+describe('Concatenation assignment .= should not be split', () => {
+    it('should keep .= together when aligning PHP concat assignment', () => {
+        const input = `$a .= $b
+$ccc .= $ddd`
+
+        const aligned = text_AlignByBlocks(input, DEFAULT_CONFIG.defaultAlignChars)
+
+        assert.ok(!aligned.includes('. ='), 'Should not split .= into . =')
+        assert.ok(aligned.includes('.='), 'Should keep .= together')
+    })
+
+    it('should not break .= when mixed with other operators', () => {
+        const input = `$result  .= $extra
+$short   .= $value
+$normal   = $simple`
+
+        const aligned = text_AlignByBlocks(input, DEFAULT_CONFIG.defaultAlignChars)
+
+        assert.ok(!aligned.includes('. ='), 'Should not split any .=')
+        assert.ok(aligned.includes('.='), 'Should keep .= together')
+        assert.ok(aligned.includes('= $simple'), 'Regular = should still work')
     })
 })
